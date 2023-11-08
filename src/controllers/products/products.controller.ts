@@ -1,7 +1,19 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { ProductsService } from 'src/sercives/products/products.service';
 
 @Controller('products')
 export class ProductsController {
+
+    //en el constructor VOY a realizar la inyeccion del servicio correspondiente al Controlador
+    constructor(private productsService: ProductsService) {}
+
+
+    /*
+        El orden de las RUTAS IMPORTA 1ro las q no son dinamicas,
+        osea las q no llevan Ids, por ejem
+   */
+
+
     //ruta con parametros por QUERY --> http://localhost:3000/products/paginado2?limit=10&offset=5
     //ruta con PAGINACION - esto retorna una LISTA de productos
     //ejemplo de ruta con destructuring de parametros
@@ -20,9 +32,37 @@ export class ProductsController {
         return `Limit: ${limit} - Offset: ${offset}`;
     }
 
-    //creo ruta trae productos
+    //ruta trae Productos
+    @Get()
+    getProducts() {
+        return this.productsService.findAll();
+    }
+
+    //creo ruta trae producto por ID
     @Get('/:id')
-    getProducts(@Param('id') id: string) {
-        return id;
+    getProduct(@Param('id') id: string) {
+        return this.productsService.findOne(id);
+    }
+
+    //ruta CREAR prod
+    @Post()
+    @HttpCode(HttpStatus.CREATED) //personalizo el status code
+    createProduct(@Body() payload: any) {
+        return this.productsService.create(payload);
+    }
+
+    //metodo/ruta update(PUT)
+    @Put(':id')
+    update(@Param('id') id: string, @Body() payload: any) {
+        return this.productsService.update(id, payload);
+    }
+
+    //delete
+    @Delete(':id')
+    delete(@Param('id') id: string) {
+        return {
+            message: 'ruta delete',
+            id,
+        }
     }
 }
