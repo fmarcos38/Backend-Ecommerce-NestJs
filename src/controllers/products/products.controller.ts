@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { CreateProductDto, UpdataProductDto } from 'src/dtos/products.dto';
 import { ProductsService } from 'src/sercives/products/products.service';
 
 @Controller('products')
@@ -45,24 +46,22 @@ export class ProductsController {
     }
 
     //ruta CREAR prod
+    //en esta ruta SE UTILIZA EL DTO q corresponde
     @Post()
     @HttpCode(HttpStatus.CREATED) //personalizo el status code
-    createProduct(@Body() payload: any) {
+    createProduct(@Body() payload: CreateProductDto) {
         return this.productsService.create(payload);
     }
 
     //metodo/ruta update(PUT)
     @Put(':id')
-    update(@Param('id') id: string, @Body() payload: any) {
+    update(@Param('id') id: string, @Body() payload: UpdataProductDto) {
         return this.productsService.update(id, payload);
     }
 
     //delete
     @Delete(':id')
     delete(@Param('id') id: string) {
-        return {
-            message: 'ruta delete',
-            id,
-        }
+        return this.productsService.delete(id);
     }
 }
