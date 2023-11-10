@@ -1,37 +1,32 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductsController } from './controllers/products/products.controller';
-import { BrandsController } from './controllers/brands/brands.controller';
-import { CategoriesController } from './controllers/categories/categories.controller';
-import { UsersController } from './controllers/users/users.controller';
-import { OrdersController } from './controllers/orders/orders.controller';
-import { CustomersController } from './controllers/customers/customers.controller';
-import { ProductsService } from './sercives/products/products.service';
-import { CategoriesService } from './sercives/categories/categories.service';
-import { OrdersService } from './sercives/orders/orders.service';
-import { BrandsService } from './sercives/brands/brands.service';
-import { CustomersService } from './sercives/customers/customers.service';
-import { UsersService } from './sercives/users/users.service';
+import { UsersModule } from './users/users.module';
+import { ProductsModule } from './products/products.module';
+import { HttpModule, HttpService } from '@nestjs/axios';
+import { lastValueFrom } from 'rxjs';
+
+const API_KEY = '123456';
 
 @Module({
-  imports: [], //en este punto se declaran
-  controllers: [
-    AppController,
-    ProductsController,
-    BrandsController,
-    CategoriesController,
-    UsersController,
-    OrdersController,
-    CustomersController,
-  ], //en este punto SE declaron los controladores
-  providers: [
+  imports: [UsersModule, ProductsModule, HttpModule], //en este punto se declaran Modulos ESPECIFICOS(products, users)
+  controllers: [ AppController, ], //en este punto SE declaron los CONTOLADORES
+  providers: [ 
     AppService, 
-    ProductsService, 
-    CategoriesService, 
-    OrdersService, 
-    BrandsService, 
-    CustomersService, 
-    UsersService], //en este punto se declaran los SERVICIOS
+    {
+      provide: 'API_KEY', //aquí coloco el nombre q va a tener la variable global(q es el mismo q la contante declarada arriba)
+      useValue: API_KEY, //aquí de donde toma el valor para lo q declaré en PROVIDE
+    },
+    //declaracion de un provide asyn y q recibe inyeccion de dependencias
+    {
+      provide: 'TASKS', //esto va a ser un array de tareas q me traigo de una api externa.
+      useFactory: async (http: HttpService) => {
+        const request = http.get('https://jsonplaceholder.typicode.com/todos');
+        const tasks = await lastValueFrom(request);
+        return tasks.data;
+      },
+      inject: [HttpService], //inyecto el servicio q viene al instalar la dependencia @nestjs/axios
+    }
+  ], //en este punto se declaran los SERVICIOS [los q son una clase usan useClass, los q son valores usan useValue]
 })
 export class AppModule {}

@@ -4,8 +4,15 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get('useValue')
   getHello(): string {
-    return 'Hola mundo!';
+    return this.appService.getHello();
+  }
+
+
+  //endpoint para las tareas
+  @Get('tasks')
+  getTasks() {
+    return this.appService.getTasks();
   }
 }

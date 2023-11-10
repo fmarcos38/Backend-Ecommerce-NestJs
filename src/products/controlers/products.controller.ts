@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { CreateProductDto, UpdataProductDto } from 'src/dtos/products.dto';
-import { ProductsService } from 'src/sercives/products/products.service';
+import { CreateProductDto, UpdataProductDto } from 'src/products/dtos/products.dto';
+import { ProductsService } from 'src/products/services/products.service';
 
 @Controller('products')
 export class ProductsController {
