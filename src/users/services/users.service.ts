@@ -1,14 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ProductsService } from 'src/products/services/products.service';
 import { CreateUserDto, UpdateUserDto } from 'src/users/dtos/user.dto';
 
 @Injectable()
 export class UsersService {
     //constructor --> voy a inyectar el Servicio de Productos, para utilizar sus metodos
-    constructor(private productsService: ProductsService) {}
+    //tamb inyecto una variable de entorno
+    constructor(
+        private productsService: ProductsService,
+        private configService: ConfigService, //ejm de importacion de una variable de entorno
+    ) {}
 
-    //trae users
+    //trae users y veo un ejem de la utilizacion de una variable de entorno
     findAll() {
+        const api = this.configService.get('API_KEY');
+        console.log('api: ', api);
         return "users";
     }
 

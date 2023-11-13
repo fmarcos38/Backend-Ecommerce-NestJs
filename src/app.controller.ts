@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('useValue')
+  @Get('useValue') //rul postman --> http://localhost:3000/useValue
   getHello(): string {
     return this.appService.getHello();
   }

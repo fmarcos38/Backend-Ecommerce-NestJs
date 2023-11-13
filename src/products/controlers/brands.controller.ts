@@ -11,6 +11,7 @@ import {
 import { BrandsService } from 'src/products/services/brands.service';
 import { CreateBrandsDto, UpdateBrandsDto } from 'src/products/dtos/brands.dto';
 
+
 @Controller('brands')
 export class BrandsController {
     constructor(private brandsService: BrandsService) { }
