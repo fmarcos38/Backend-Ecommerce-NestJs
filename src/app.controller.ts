@@ -15,4 +15,11 @@ export class AppController {
   getTasks() {
     return this.appService.getTasks();
   }
+
+
+  //endpoint para servicio con postgres
+  @Get('/postgers')
+  getPostgres() {
+    return this.appService.getPostgres();
+  }
 }

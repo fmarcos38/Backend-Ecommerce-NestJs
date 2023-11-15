@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Client } from 'pg';
 import { ProductsService } from 'src/products/services/products.service';
 import { CreateUserDto, UpdateUserDto } from 'src/users/dtos/user.dto';
 
@@ -10,6 +11,7 @@ export class UsersService {
     constructor(
         private productsService: ProductsService,
         private configService: ConfigService, //ejm de importacion de una variable de entorno
+        @Inject('PG') private clientePostgres: Client, //inyeccion de la conexion con postgres
     ) {}
 
     //trae users y veo un ejem de la utilizacion de una variable de entorno
@@ -44,5 +46,16 @@ export class UsersService {
 
     remove(id: string) {
         return "elim";
+    }
+
+    /*----service para probar la conexion con postgres------*/
+    getTasksPostgres(){
+        return new Promise((resolve, reject) => {
+            this.clientePostgres.query('SELECT * FROM tasks', (err, res) => {
+                if(err) { reject(err) }
+
+                resolve(res.rows);
+            });
+        });
     }
 }

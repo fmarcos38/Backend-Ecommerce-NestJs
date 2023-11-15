@@ -41,4 +41,10 @@ export class UsersController {
     remove(@Param('id') id: string) {
         return "eliminado";
     }
+
+    //endpoiint para probar conexion con postgres
+    @Get('/postgresGet')
+    getTasksPostgres() {
+        return this.userService.getTasksPostgres();
+    }
 }
