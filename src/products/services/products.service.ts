@@ -1,33 +1,25 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto, UpdataProductDto } from 'src/products/dtos/products.dto';
 import { Product } from 'src/products/entities/product.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
 
-    private products: Product[] = [
-        {
-            id:'1',
-            name: 'p1',
-            price: 33,
-        },
-        {
-            id:'2',
-            name: 'p2',
-            price: 33,
-        },
-    ];
-
-
+    //constructor
+    constructor(@InjectRepository(Product) private productRepo: Repository<Product>) {}
+    
+    
     //metodos 
     //metodo trae todos los prods
     findAll() {
-        return this.products;
+        return this.productRepo.find();
     }
 
     //trae un orid
-    findOne(id: string) {
-        const buscoProd = this.products.find(p => p.id === id);
+    findOne(id: number) {
+        const buscoProd = this.productRepo.findOneBy({id});
         if(!buscoProd) {
             throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
         }
@@ -36,7 +28,7 @@ export class ProductsService {
 
     //crear prod
     //aquí tamb uso el DTO en el atributo del metodo
-    create(payload: CreateProductDto) {
+    /* create(payload: CreateProductDto) {
         const newP = {
             //id: this.products.length + 1,
             ...payload,
@@ -44,10 +36,10 @@ export class ProductsService {
         this.products.push(newP);
 
         return newP;
-    }
+    } */
 
     //actualizar
-    update(id: string, payload: UpdataProductDto) {
+    /* update(id: string, payload: UpdataProductDto) {
         const buscoProd = this.findOne(id);
         if(buscoProd) {
             const pos = this.products.findIndex(p => p.id === id);
@@ -55,15 +47,15 @@ export class ProductsService {
             return this.products[pos];
         }
         return null;
-    }
+    } */
     
     //elim
-    delete(id: string) {
+    /* delete(id: string) {
         const buscoPos = this.products.findIndex(p => p.id === id); //sino encuentra retorna -1
         if(buscoPos === -1) {
             throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
         }
         this.products.splice(buscoPos, 1);
         return this.products;
-    }
+    } */
 }

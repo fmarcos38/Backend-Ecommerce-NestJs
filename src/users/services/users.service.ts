@@ -27,12 +27,12 @@ export class UsersService {
     }
 
     //trae ordenes para un User
-    getOrdesByUSer(id: string) {
+    async getOrdesByUSer(id: string) {
         const buscoUser = this.findOne(id);
         return{
             date: Date.now(),
             user: buscoUser,
-            products: this.productsService.findAll(), //utilizo el servicio de otro modulo
+            products: await this.productsService.findAll(), //utilizo el servicio de otro modulo
         }
     }
 
