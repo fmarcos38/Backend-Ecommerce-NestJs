@@ -1,9 +1,9 @@
 //import { PartialType } from "@nestjs/mapped-types"; //SIN SWAGGER
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { IsNotEmpty, IsPhoneNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsPhoneNumber, IsString } from "class-validator";
 
 export class CreateCustomerDto {
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     @ApiProperty() //para swagger
     readonly name: string;

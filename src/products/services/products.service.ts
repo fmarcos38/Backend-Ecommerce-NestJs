@@ -18,8 +18,8 @@ export class ProductsService {
     }
 
     //trae un orid
-    findOne(id: number) {
-        const buscoProd = this.productRepo.findOneBy({id});
+    async findOne(id: number) {
+        const buscoProd = await this.productRepo.findOneBy({id});
         if(!buscoProd) {
             throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
         }
@@ -28,34 +28,43 @@ export class ProductsService {
 
     //crear prod
     //aquí tamb uso el DTO en el atributo del metodo
-    /* create(payload: CreateProductDto) {
-        const newP = {
-            //id: this.products.length + 1,
-            ...payload,
-        };
-        this.products.push(newP);
+    create(payload: CreateProductDto) {
+        //Opcion 1 para crear un producto
+        //const newProd = new Product();        
+        //asigno valores a sus atributos --> Uno a uno (no es la mejor manera)
+        /* newProd.name = payload.name;
+        newProd.price = payload.price; */
 
-        return newP;
-    } */
+        //opcion 2 para crear un producto
+        //aquí le digo al productRepo q me cree un nuevo prod con los valores del payload
+        //me evita tener q asignar uno a uno los valores
+        const prod = this.productRepo.create(payload);
+        return this.productRepo.save(prod); //guardo el prod en la BD
+    }
 
     //actualizar
-    /* update(id: string, payload: UpdataProductDto) {
-        const buscoProd = this.findOne(id);
-        if(buscoProd) {
-            const pos = this.products.findIndex(p => p.id === id);
-            this.products[pos] = {...buscoProd, ...payload}; //lo q está entre {} es un metodo de Javascreipt
-            return this.products[pos];
-        }
-        return null;
-    } */
-    
-    //elim
-    /* delete(id: string) {
-        const buscoPos = this.products.findIndex(p => p.id === id); //sino encuentra retorna -1
-        if(buscoPos === -1) {
+    async update(id: number, payload: UpdataProductDto) {
+        const buscoProd = await this.productRepo.findOneBy({id});
+
+        if(!buscoProd) {
             throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
         }
-        this.products.splice(buscoPos, 1);
-        return this.products;
-    } */
+
+        //actualizo el prod
+        await this.productRepo.merge(buscoProd, payload);
+
+        //guardo el prod actualizado
+        return this.productRepo.save(buscoProd);
+    }
+    
+    //elim
+    async delete(id: number) {
+        const buscoPos = await this.productRepo.findOneBy({id});
+        
+        if(!buscoPos) {
+            throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
+        }
+
+        return this.productRepo.delete(id);
+    }
 }

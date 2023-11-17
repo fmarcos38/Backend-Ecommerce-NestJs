@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'pg';
 import { ProductsService } from 'src/products/services/products.service';
 import { CreateUserDto, UpdateUserDto } from 'src/users/dtos/user.dto';
+import { User } from '../entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -12,12 +15,19 @@ export class UsersService {
         private productsService: ProductsService,
         private configService: ConfigService, //ejm de importacion de una variable de entorno
         @Inject('PG') private clientePostgres: Client, //inyeccion de la conexion con postgres
+        //para el CREUD
+        @InjectRepository(User) private userRepo: Repository<User>,
     ) {}
 
-    //trae users y veo un ejem de la utilizacion de una variable de entorno
-    findAll() {
+    //ejem de la utilizacion de una variable de entorno
+    muestraApiKey() {
         const api = this.configService.get('API_KEY');
-        console.log('api: ', api);
+        //console.log('api: ', api);
+        return "users";
+    }
+
+    //trae users
+    findAll() {
         return "users";
     }
 

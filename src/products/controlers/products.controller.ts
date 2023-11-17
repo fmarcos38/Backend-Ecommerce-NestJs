@@ -47,21 +47,21 @@ export class ProductsController {
 
     //ruta CREAR prod
     //en esta ruta SE UTILIZA EL DTO q corresponde
-    /*  @Post()
+    @Post()
     @HttpCode(HttpStatus.CREATED) //personalizo el status code
     createProduct(@Body() payload: CreateProductDto) {
         return this.productsService.create(payload);
-    } */
+    }
 
     //metodo/ruta update(PUT)
-    /* @Put(':id')
-    update(@Param('id') id: string, @Body() payload: UpdataProductDto) {
+    @Put(':id')
+    update(@Param('id') id: number, @Body() payload: UpdataProductDto) {
         return this.productsService.update(id, payload);
-    } */
+    }
 
     //delete
-    /* @Delete(':id')
-    delete(@Param('id') id: string) {
+    @Delete(':id')
+    delete(@Param('id') id: number) {
         return this.productsService.delete(id);
-    } */
+    }
 }

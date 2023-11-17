@@ -11,7 +11,7 @@ export class CategoriesController {
 
   //endpoint con 2 parametros por URL - trae productos de una categoría
   @Get('/:id/products/:productId')
-  getProductByCategory( @Param('id') id: string, @Param('productId') productId: string ) {
+  getProductByCategory( @Param('id') id: number, @Param('productId') productId: string ) {
     return `category ${id} - producto: ${productId}`;
   }
   
@@ -21,12 +21,12 @@ export class CategoriesController {
   }
 
   @Put('id')
-  update(@Param('id') id:string, payload: UpdateCategoryDto) {
+  update(@Param('id') id:number, payload: UpdateCategoryDto) {
     return;
   }
 
   @Delete('id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return;
   }
 }

@@ -5,10 +5,10 @@ import { ApiProperty, PartialType } from "@nestjs/swagger";
 
 export class CreateProductDto {
     //estos atributos solo son de lectura
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     @ApiProperty() //para swagger
-    readonly id: string;
+    readonly id: number;
 
     @IsString()
     @IsNotEmpty()

@@ -1,28 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCategoryDto, UpdateCategoryDto } from 'src/products/dtos/category.dto';
+import { Category } from '../entities/category.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
 
+    constructor(@InjectRepository(Category) private categoryRepo: Repository<Category>) {}
+
     //trae users
-    findAll() {
-        return "users";
+    async findAll() {
+        return this.categoryRepo.find();
     }
 
     //findOne
-    findOne(id: string) {
-        return "user";
+    async findOne(id: number) {
+        const buscoCat = this.categoryRepo.findOneBy({id});
+        if(!buscoCat) {
+            return new HttpException("La categoria no existe", HttpStatus.BAD_REQUEST);
+        }
+        return ;
     }
 
-    create(payload: CreateCategoryDto) {
-        return "creado";
+    async create(payload: CreateCategoryDto) {
+        const newCat = this.categoryRepo.create(payload);
+        return this.categoryRepo.save(newCat);
     }
 
-    update(id: string, payload: UpdateCategoryDto) {
-        return "actualizado";
+    async update(id: number, payload: UpdateCategoryDto) {
+        const buscoCat = await this.categoryRepo.findOneBy({id});
+        if(!buscoCat) {
+            return new HttpException("La categoria no existe", HttpStatus.BAD_REQUEST);
+        }
+        this.categoryRepo.merge(buscoCat, payload);
+
+        return this.categoryRepo.save(buscoCat);
     }
 
-    remove(id: string) {
-        return "elim";
+    async remove(id: number) {
+        const buscoCat = await this.categoryRepo.findOneBy({id});
+        if(!buscoCat) {
+            return new HttpException("La categoria no existe", HttpStatus.BAD_REQUEST);
+        }
+
+        return this.categoryRepo.delete(id);
     }
 }

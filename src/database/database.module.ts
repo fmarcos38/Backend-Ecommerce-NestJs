@@ -39,6 +39,8 @@ client.connect(); */ //realizada esta conexion PODEMOS realizar cualqr Query
           username: postgresUser,          
           password: postegresPassword,
           database: postgresDB,
+          synchronize: true, //con esta directiva ahogo q se sincronice al crear entidades Q se creen tablas en la DB
+          autoLoadEntities: true, //le digo q las entidades sean autocargadas
         };
       }, 
     }),
