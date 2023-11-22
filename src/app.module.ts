@@ -35,7 +35,7 @@ import { DatabaseModule } from './database/database.module';
     HttpModule,
     DatabaseModule,
   ], //en este punto se declaran Modulos ESPECIFICOS(products, users)
-  controllers: [ AppController, ], //en este punto SE declaron los CONTOLADORES
+  controllers: [ AppController ], //en este punto SE declaron los CONTOLADORES
   providers: [
     //declaracion de un provide asyn y q recibe inyeccion de dependencias
     {
@@ -46,7 +46,7 @@ import { DatabaseModule } from './database/database.module';
         return tasks.data;
       },
       inject: [HttpService], //inyecto el servicio q viene al instalar la dependencia @nestjs/axios
-    }
+    },
   ], //en este punto se declaran los SERVICIOS [los q son una clase usan useClass, los q son valores usan useValue]
 })
 export class AppModule {}

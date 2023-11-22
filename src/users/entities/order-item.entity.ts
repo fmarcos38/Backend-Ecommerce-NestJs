@@ -9,12 +9,14 @@ import {
 
 import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class OrderItem {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Exclude() // decorador para q no se muestre en las respuestas
     @CreateDateColumn({
         type: 'timestamptz',
         default: () => 'CURRENT_TIMESTAMP',

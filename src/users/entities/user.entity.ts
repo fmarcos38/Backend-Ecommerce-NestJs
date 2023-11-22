@@ -27,7 +27,7 @@ export class User {
 
     //relacion 1:1 con Customer
     @OneToOne(() => Customer, (customer) => customer.user, { nullable: true }) //no todos los users tienen customer
-    @JoinColumn() //este decorador crea la referencia en la tabla de User
+    @JoinColumn({ name: 'customer_id'}) //este decorador crea la referencia en la tabla de User y le digo q nombre va a tener la columna en la DB
     customer: Customer;
     
 }

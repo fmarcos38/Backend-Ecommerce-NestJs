@@ -8,12 +8,17 @@ import { User } from './entities/user.entity';
 import { Order } from './entities/order.entity';
 import { Customer } from './entities/customer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { OrderItem } from './entities/order-item.entity';
+import { OrdersController } from './controllers/orders.controller';
+import { OrdersService } from './services/orders.service';
+import { OrderItemService } from './services/order-item.service';
+import { OrderItemController } from './controllers/order-item.controller';
 
 @Module({
     //importo a PRODUCTSMODULE --> para poder utilizar a los Services exportables de ProductsModule
     //importo a TYPEORMMODULE --> para poder utilizar a los Services exportables de TypeOrmModule
-    imports:[ProductsModule, TypeOrmModule.forFeature([User, Order, Customer])], 
-    controllers: [CustomerController, UsersController],
-    providers: [CustomersService, UsersService],
+    imports:[ProductsModule, TypeOrmModule.forFeature([User, Order, Customer, OrderItem])], 
+    controllers: [CustomerController, UsersController, OrdersController, OrderItemController],
+    providers: [CustomersService, UsersService, OrdersService, OrderItemService],
 })
 export class UsersModule {}

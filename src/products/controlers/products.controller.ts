@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
-import { CreateProductDto, UpdataProductDto } from 'src/products/dtos/products.dto';
+import { CreateProductDto, FilterProductsDto, UpdataProductDto } from 'src/products/dtos/products.dto';
 import { ProductsService } from 'src/products/services/products.service';
 
 @Controller('products')
@@ -14,7 +14,7 @@ export class ProductsController {
         osea las q no llevan Ids, por ejem
    */
 
-
+     /*----------Tipos de paginados----------*/
     //ruta con parametros por QUERY --> http://localhost:3000/products/paginado2?limit=10&offset=5
     //ruta con PAGINACION - esto retorna una LISTA de productos
     //ejemplo de ruta con destructuring de parametros
@@ -26,17 +26,22 @@ export class ProductsController {
 
     //ruta con 2 params SIN destructuring, declarandolos explicitamnt
     @Get('paginado2')
-    getProdsPaginados(
+    getPaginados(
         @Query('limit') limit: number = 100, //puedo enviar el valor por defecto SINO viene
         @Query('offset') offset: number,
     ) {
         return `Limit: ${limit} - Offset: ${offset}`;
     }
-
-    //ruta trae Productos
+    /*-------------------------------------------------------------------------------------------------*/
+    
+    //ruta trae Productos paginados
+    //ejem de ruta paginada --> http://localhost:3000/products?limit=3&offset=0 (pag 1)
+    //ejem de ruta paginada --> http://localhost:3000/products?limit=3&offset=3 (pag 2)
+    //el total de prod si es de 6, en la pag 1 me trae 3 y en la pag 2 me trae los otros 3
+    //ejem para filtrar entre precios: http://localhost:3000/products?minPrice=100&maxPrice=200
     @Get()
-    getProducts() {
-        return this.productsService.findAll();
+    getAllProductsPaginados(@Param() params: FilterProductsDto) {
+        return this.productsService.findAll(params);
     }
 
     //creo ruta trae producto por ID

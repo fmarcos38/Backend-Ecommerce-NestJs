@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateProductDto, UpdataProductDto } from 'src/products/dtos/products.dto';
+import { CreateProductDto, FilterProductsDto, UpdataProductDto } from 'src/products/dtos/products.dto';
 import { Product } from '../entities/product.entity';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere, Between } from 'typeorm';
 import { Brand } from '../entities/brands.entity';
 import { Category } from '../entities/category.entity';
 
@@ -18,8 +18,27 @@ export class ProductsService {
     
     
     //metodos 
+
+    // ...
+
     //metodo trae todos los prods
-    findAll() {
+    findAll(params?: FilterProductsDto) {
+        //si trae los parametros de paginado
+        if(params) {
+            const where: FindOptionsWhere<Product> = {}; //creo un objeto vacio para el where
+            const {limit, offset} = params;
+            const {minPrice, maxPrice} = params;
+            //si trae los params de filtrado por precio
+            if(minPrice && maxPrice) {
+                where.price = Between(minPrice, maxPrice) ;
+            }
+            return this.productRepo.find({
+                relations: ['brand'],
+                where, // añadimos el where a la consulta
+                take: limit,
+                skip: offset,
+            });
+        }
         return this.productRepo.find({relations: ['brand']});
     }
 
