@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 //import { PartialType } from "@nestjs/mapped-types"; //SIN SWAGGER
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 
@@ -20,6 +20,19 @@ export class CreateProductDto {
     @IsPositive()
     @ApiProperty() //para swagger
     readonly price: number;
+
+    //relacion con la tabla Brands
+    @IsNumber()
+    @IsNotEmpty()
+    @IsPositive()
+    @ApiProperty() //para swagger
+    readonly brandId: number;
+
+    //relacion con la tabla Categories
+    @IsArray()
+    @IsNotEmpty()
+    @ApiProperty() //para swagger
+    readonly categoriesIds: number[];
 }
 
 //creo dto para update con la dependencia PartialType -->

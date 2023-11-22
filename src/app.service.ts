@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { rejects } from 'assert';
 import { Client } from 'pg';
 import config from 'src/config';
 

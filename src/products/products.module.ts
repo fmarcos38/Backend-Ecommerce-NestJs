@@ -13,7 +13,7 @@ import { Brand } from './entities/brands.entity';
 
 
 @Module({
-    imports: [ TypeOrmModule.forFeature([Product, Brand, Category]) ], //aquí declar las ENTIDADES q manipulará este modulo
+    imports: [ TypeOrmModule.forFeature([Product, Brand, Category]) ], //aquí declaro las ENTIDADES q manipulará este modulo
     controllers: [ProductsController, CategoriesController, BrandsController], //declaro los controladores
     providers: [ProductsService, CategoriesService, BrandsService], //declaro los servicios 
     exports: [ProductsService], //acá PONGO los MODULOS q voy a utilizar desde Users en este caso. Osea los q se puedan importar dsd otros modulos

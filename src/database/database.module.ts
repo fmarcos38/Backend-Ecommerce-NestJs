@@ -29,16 +29,17 @@ client.connect(); */ //realizada esta conexion PODEMOS realizar cualqr Query
     TypeOrmModule.forRootAsync({
       inject: [config.KEY], //de aca vienen variab de entorno
       useFactory: (configService: ConfigType<typeof config>) => { //paso por param el arch config COMO siempre para la inyecc de depend
-        //realizo la conexion async
+        //realizo la conexion async, y le paso las var de entorno YA sean para postgres o mysql
         const { postgresDB, postgresUser, postegresPassword, postgresPort, postgresHost } = configService.postgres; //destructuring de las var en el arch config.ts para posgres
 
         return {
-          type: 'postgres', //especifico a q tipo de DB es.          
+          type: 'postgres', //especifico a q tipo de DB es. (postgres o mysql)          
           host: postgresHost,
           port: postgresPort,
           username: postgresUser,          
           password: postegresPassword,
           database: postgresDB,
+          //SI VOY a utilizar la METODOLOGIA DE MIGRACIONES, el sgt parametro debe estar en FALSE
           synchronize: true, //con esta directiva ahogo q se sincronice al crear entidades Q se creen tablas en la DB
           autoLoadEntities: true, //le digo q las entidades sean autocargadas
         };

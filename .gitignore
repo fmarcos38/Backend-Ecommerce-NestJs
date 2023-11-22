@@ -39,3 +39,6 @@ lerna-debug.log*
 
 #carpeta de la DB
 /postgres_data
+
+#carpeta de la DB MySQL
+/mysql_data

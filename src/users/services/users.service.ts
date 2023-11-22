@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'pg';
@@ -6,6 +6,7 @@ import { ProductsService } from 'src/products/services/products.service';
 import { CreateUserDto, UpdateUserDto } from 'src/users/dtos/user.dto';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
+import { CustomersService } from './customers.service';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,7 @@ export class UsersService {
         @Inject('PG') private clientePostgres: Client, //inyeccion de la conexion con postgres
         //para el CREUD
         @InjectRepository(User) private userRepo: Repository<User>,
+        private costumerService: CustomersService, //inyeccion del servicio de Costumer
     ) {}
 
     //ejem de la utilizacion de una variable de entorno
@@ -28,16 +30,22 @@ export class UsersService {
 
     //trae users
     findAll() {
-        return "users";
+        return this.userRepo.find({relations: ['customer']}); //trae la relacion con customer
     }
 
     //findOne
-    findOne(id: string) {
-        return "user";
+    async findOne(id: number) {
+        const user = await this.userRepo.findOneBy({id});
+
+        if(!user) {
+            throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
+        }
+
+        return user;
     }
 
     //trae ordenes para un User
-    async getOrdesByUSer(id: string) {
+    async getOrdesByUSer(id: number) {
         const buscoUser = this.findOne(id);
         return{
             date: Date.now(),
@@ -46,16 +54,32 @@ export class UsersService {
         }
     }
 
-    create(payload: CreateUserDto) {
-        return "creado";
+    async create(payload: CreateUserDto) {
+        const newUser = this.userRepo.create(payload);
+
+        //si el payload tiene customerId, entonces busco el customer y lo asigno al user
+        if(payload.customerId) {
+            const customer = await this.costumerService.findOne(payload.customerId);
+            newUser.customer = customer;
+        }
+
+        return this.userRepo.save(newUser);
     }
 
-    update(id: string, payload: UpdateUserDto) {
-        return "actualizado";
+    async update(id: number, payload: UpdateUserDto) {
+        const user = await this.userRepo.findOneBy({id});
+        this.userRepo.merge(user, payload);
+        return this.userRepo.save(user);
     }
 
-    remove(id: string) {
-        return "elim";
+    async remove(id: number) {
+        const user = await this.userRepo.findOneBy({id});
+
+        if(!user) {
+            throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
+        }
+
+        return this.userRepo.remove(user);
     }
 
     /*----service para probar la conexion con postgres------*/

@@ -16,7 +16,7 @@ export class CategoriesService {
 
     //findOne
     async findOne(id: number) {
-        const buscoCat = this.categoryRepo.findOneBy({id});
+        const buscoCat = this.categoryRepo.findOne({ where: {id}, relations: ['products']});
         if(!buscoCat) {
             return new HttpException("La categoria no existe", HttpStatus.BAD_REQUEST);
         }
@@ -28,6 +28,7 @@ export class CategoriesService {
         return this.categoryRepo.save(newCat);
     }
 
+    //ver si tengo q poner la relacion como en products
     async update(id: number, payload: UpdateCategoryDto) {
         const buscoCat = await this.categoryRepo.findOneBy({id});
         if(!buscoCat) {

@@ -1,17 +1,30 @@
-import { Product } from "src/products/entities/product.entity";
-import { User } from "./user.entity";
-import { ArrayContainedBy, ArrayContains, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+
+import { CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Customer } from "./customer.entity";
+import { OrderItem } from "./order-item.entity";
 
 
 @Entity()
-export class Oreder {
+export class Order {
 
     @PrimaryGeneratedColumn()
     data: Date;
 
-    @Column({ type: 'varchar', length: 100})
-    user: User; //utilizo la entidad User
-
-    @OneToMany(() => Product, (product) => product.id)
-    products: Product[]; //arreglo de productos,tipado con la entidad Productus
+    @CreateDateColumn({
+        type: 'timestamptz',
+        default: () => 'CURRENT_TIMESTAMP',
+    })
+    createAt: Date;
+    
+    @UpdateDateColumn({
+        type: 'timestamptz',
+        default: () => 'CURRENT_TIMESTAMP',
+    })
+    updateAt: Date;
+    
+    @ManyToOne(() => Customer, (customer) => customer.orders)
+    customer: Customer;
+    
+    @OneToMany(() => OrderItem, (item) => item.order)
+    items: OrderItem[];
 }

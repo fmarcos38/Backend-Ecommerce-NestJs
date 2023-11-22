@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { CreateProductDto, UpdataProductDto } from 'src/products/dtos/products.dto';
 import { ProductsService } from 'src/products/services/products.service';
 
@@ -41,7 +41,7 @@ export class ProductsController {
 
     //creo ruta trae producto por ID
     @Get('/:id')
-    getProduct(@Param('id') id: number) {
+    getProduct(@Param('id', ParseIntPipe) id: number) {
         return this.productsService.findOne(id);
     }
 
@@ -55,13 +55,31 @@ export class ProductsController {
 
     //metodo/ruta update(PUT)
     @Put(':id')
-    update(@Param('id') id: number, @Body() payload: UpdataProductDto) {
+    update(@Param('id', ParseIntPipe) id: number, @Body() payload: UpdataProductDto) {
         return this.productsService.update(id, payload);
     }
 
     //delete
     @Delete(':id')
-    delete(@Param('id') id: number) {
+    delete(@Param('id', ParseIntPipe) id: number) {
         return this.productsService.delete(id);
+    }
+
+    //elimino categoria de un producto
+    @Delete(':productId/categorias/:categoryId')
+    removeCategory(
+        @Param('productId', ParseIntPipe) productId: number,
+        @Param('categoryId', ParseIntPipe) categoryId: number, //ParseIntPipe para parsear el id a number [ya q siempre viene como string, al pasar por la URL]
+    ) {
+        return this.productsService.removeCategoryByProduct(productId, categoryId);
+    }
+
+    //agrego categoria a un producto
+    @Put(':productId/categorias/:categoryId')
+    addCategoryToProduct(
+        @Param('productId', ParseIntPipe) productId: number,
+        @Param('categoryId', ParseIntPipe) categoryId: number,
+    ) {
+        return this.productsService.addCategoryToProduct(productId, categoryId);
     }
 }
