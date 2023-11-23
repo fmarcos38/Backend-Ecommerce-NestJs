@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto, FilterProductsDto, UpdataProductDto } from 'src/products/dtos/products.dto';
 import { Product } from '../entities/product.entity';
-import { Repository, FindOptionsWhere, Between } from 'typeorm';
+import { Repository, FindOptionsWhere, Between, In } from 'typeorm';
 import { Brand } from '../entities/brands.entity';
 import { Category } from '../entities/category.entity';
 
@@ -44,8 +44,10 @@ export class ProductsService {
 
     //trae un orid
     async findOne(id: number) {
-        //const buscoProd = await this.productRepo.findOneBy({id}, {relations: ['brand', 'categories']}); //trae el prod con su brand y categorias(da error)
-        const buscoProd = await this.productRepo.findOneBy({id});
+        const buscoProd = await this.productRepo.findOne({
+            where: {id}, 
+            relations: ['brand', 'categories']
+        }); //trae el prod con su brand y categorias        
         
         if(!buscoProd) {
             throw new HttpException("El prod no existe", HttpStatus.BAD_REQUEST);
@@ -78,12 +80,18 @@ export class ProductsService {
             const brand = await this.brandRepo.findOneBy({id: payload.brandId});
             prod.brand = brand;
         }
-        
+
         //relacion con categorias
-        const categories = await this.categoryRepo.find({
+        if(payload.categoriesIds) {
+            const categories = await this.categoryRepo.findBy({ id: In(payload.categoriesIds) });
+            prod.categories = categories;
+        }
+
+        //relacion con categorias ---> OTRA FORMA DE HACERLO <---
+        /* const categories = await this.categoryRepo.find({
             where: payload.categoriesIds.map((categoryId) => ({ id: categoryId })),
         });
-        prod.categories = categories; //asigno las categorias al prod
+        prod.categories = categories; */ //asigno las categorias al prod
 
         return this.productRepo.save(prod); //guardo el prod en la BD
     }
